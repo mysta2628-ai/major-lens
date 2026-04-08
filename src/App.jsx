@@ -3,13 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowLeft,
   ArrowRight,
-  BarChart3,
   Briefcase,
-  CheckCircle2,
   Compass,
   GraduationCap,
   Scale,
-  Sparkles,
 } from 'lucide-react'
 
 const questions = [
@@ -179,6 +176,26 @@ function SectionIntro({ eyebrow, title, text }) {
   )
 }
 
+function HomeValueCard({ title, text }) {
+  return (
+    <div className="rounded-[24px] border border-[#d9ddd5] bg-white p-6">
+      <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#21352d]">{title}</h3>
+      <p className="mt-3 leading-7 text-[#5f6d62]">{text}</p>
+    </div>
+  )
+}
+
+function HomeStepCard({ number, title, text }) {
+  return (
+    <div>
+      <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#21352d]">
+        {number}. {title}
+      </h3>
+      <p className="mt-3 leading-7 text-[#5f6d62]">{text}</p>
+    </div>
+  )
+}
+
 export default function App() {
   const [screen, setScreen] = useState('home')
   const [questionIndex, setQuestionIndex] = useState(0)
@@ -250,7 +267,7 @@ export default function App() {
 
   function nextQuestion() {
     if (questionIndex < questions.length - 1) setQuestionIndex((prev) => prev + 1)
-    else setScreen('results')
+    else setScreen('profile')
   }
 
   function prevQuestion() {
@@ -266,7 +283,7 @@ export default function App() {
   const navItems = [
     ['home', 'Home'],
     ['assessment', 'Assessment'],
-    ['results', 'Results'],
+    ['profile', 'Profile'],
     ['explore', 'Explore'],
     ['compare', 'Compare'],
     ['next', 'Next Steps'],
@@ -282,7 +299,7 @@ export default function App() {
             </div>
             <div>
               <div className="text-[2rem] font-semibold tracking-[-0.05em] text-[#21352d]">Major Lens</div>
-              <p className="text-sm text-[#6f7d68]">Editorial academic prototype</p>
+              <p className="text-sm text-[#6f7d68]">Reflective academic decision-support prototype</p>
             </div>
           </button>
 
@@ -312,12 +329,12 @@ export default function App() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
-              className="space-y-10"
+              className="space-y-16"
             >
-              <section className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
+              <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
                 <div className="max-w-4xl">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#8a9488]">
-                    Reflective decision-support prototype
+                    Reflective academic decision-support prototype
                   </p>
 
                   <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[0.96] tracking-[-0.06em] text-[#21352d] lg:text-7xl">
@@ -325,96 +342,103 @@ export default function App() {
                   </h1>
 
                   <p className="mt-8 max-w-2xl text-lg leading-8 text-[#5f6d62]">
-                    Major Lens helps high school graduates and first-year university students explore possible study pathways through interests, values, analytical strengths, and real-world outcomes.
+                    Major Lens helps high school graduates and first-year university students make more balanced major decisions through a structured assessment of interests, strengths, values, and employment pressure.
                   </p>
 
                   <div className="mt-8 flex flex-wrap gap-3">
                     <PrimaryButton onClick={() => setScreen('assessment')}>
-                      Start the assessment <ArrowRight className="ml-2 h-4 w-4" />
+                      Take the 5-minute assessment
                     </PrimaryButton>
                     <SecondaryButton onClick={() => setScreen('explore')}>
-                      Browse study directions
+                      Explore study directions
                     </SecondaryButton>
                   </div>
                 </div>
 
-                <EditorialCard className="overflow-hidden">
-                  <div className="border-b border-[#d9ddd5] px-7 py-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8a9488]">At a glance</p>
-                    <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">
-                      A more reflective way to narrow your options
-                    </h3>
-                  </div>
+                <aside>
+                  <EditorialCard className="p-7">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8a9488]">
+                      At a glance
+                    </p>
 
-                  <div className="space-y-6 px-7 py-7">
-                    {[
-                      {
-                        label: 'Interests',
-                        value: profile.curiosity,
-                      },
-                      {
-                        label: 'Analytical structure',
-                        value: profile.structure,
-                      },
-                      {
-                        label: 'Values alignment',
-                        value: profile.values,
-                      },
-                      {
-                        label: 'Employment pressure',
-                        value: profile.employment,
-                      },
-                    ].map((item) => (
-                      <div key={item.label}>
-                        <div className="mb-2 flex items-center justify-between">
-                          <span className="text-sm font-medium text-[#486156]">{item.label}</span>
-                          <span className="text-sm text-[#8a9488]">{bandLabel(item.value)}</span>
-                        </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-[#e6e9e1]">
-                          <div className="h-full rounded-full bg-[#29443a]" style={{ width: `${item.value}%` }} />
-                        </div>
-                      </div>
-                    ))}
+                    <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">
+                      Your decision profile
+                    </h2>
 
-                    <div className="rounded-[24px] bg-[#f1f2ec] p-5">
-                      <p className="text-sm font-medium text-[#486156]">What this tool does</p>
+                    <p className="mt-3 text-sm leading-6 text-[#5f6d62]">
+                      A preview of the dimensions Major Lens helps you reflect on.
+                    </p>
+
+                    <dl className="mt-7 space-y-4">
+                      {[
+                        ['Interests', 'Emerging focus'],
+                        ['Analytical structure', 'Moderate preference'],
+                        ['Values alignment', 'Strong importance'],
+                        ['Employment pressure', 'Active influence'],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between gap-4 border-b border-[#ecefe8] pb-3 last:border-b-0 last:pb-0">
+                          <dt className="text-[#486156]">{label}</dt>
+                          <dd className="text-right font-medium text-[#21352d]">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+
+                    <div className="mt-8 rounded-[24px] bg-[#f1f2ec] p-5">
+                      <h3 className="text-sm font-semibold text-[#486156]">What this tool does</h3>
                       <p className="mt-2 text-sm leading-6 text-[#5f6d62]">
-                        It does not tell you who you are. It helps you compare possible directions more carefully.
+                        Major Lens does not tell you who you are. It helps you identify what is driving your decision, compare study directions more carefully, and leave with a clearer shortlist.
                       </p>
                     </div>
-                  </div>
-                </EditorialCard>
+                  </EditorialCard>
+                </aside>
               </section>
 
               <section className="grid gap-6 lg:grid-cols-3">
-                {[
-                  {
-                    icon: Sparkles,
-                    title: 'Interpret fit beyond prestige',
-                    text: 'Move away from inherited assumptions and toward evidence about how you think, learn, and decide.',
-                  },
-                  {
-                    icon: BarChart3,
-                    title: 'Compare majors through multiple criteria',
-                    text: 'Interest, structure, flexibility, social impact, and outcomes can all matter at once.',
-                  },
-                  {
-                    icon: CheckCircle2,
-                    title: 'Leave with a more defensible shortlist',
-                    text: 'The aim is not certainty, but a clearer basis for your next round of exploration.',
-                  },
-                ].map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <EditorialCard key={item.title} className="p-7">
-                      <div className="w-fit rounded-full border border-[#cfd5cb] bg-[#f1f2ec] p-3">
-                        <Icon className="h-5 w-5 text-[#486156]" />
-                      </div>
-                      <h3 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">{item.title}</h3>
-                      <p className="mt-3 text-base leading-7 text-[#5f6d62]">{item.text}</p>
-                    </EditorialCard>
-                  )
-                })}
+                <HomeValueCard
+                  title="Interpret fit beyond prestige"
+                  text="Move away from inherited assumptions and toward evidence about how you think, learn, and decide."
+                />
+                <HomeValueCard
+                  title="Compare majors through multiple criteria"
+                  text="Interest, structure, flexibility, values, and outcomes can all matter at once, instead of letting salary dominate the decision."
+                />
+                <HomeValueCard
+                  title="Leave with a clearer shortlist"
+                  text="The goal is not certainty, but a more confident and defensible next step in your exploration."
+                />
+              </section>
+
+              <section id="how-it-works" className="space-y-8">
+                <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[#21352d]">
+                  How Major Lens works
+                </h2>
+
+                <div className="grid gap-10 lg:grid-cols-3">
+                  <HomeStepCard
+                    number="1"
+                    title="Assess"
+                    text="Answer 20 short statements about your interests, analytical strengths, values, and current decision pressures."
+                  />
+                  <HomeStepCard
+                    number="2"
+                    title="Interpret"
+                    text="Receive a profile that shows what may be shaping your current major decision — including where job pressure may be outweighing genuine fit."
+                  />
+                  <HomeStepCard
+                    number="3"
+                    title="Compare"
+                    text="Explore recommended study directions and compare them across criteria such as learning style, flexibility, values, and outcomes."
+                  />
+                </div>
+              </section>
+
+              <section className="mx-auto max-w-4xl border-t border-[#d9ddd5] pt-12 text-center">
+                <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">
+                  Designed for reflective major exploration
+                </h2>
+                <p className="mt-4 leading-8 text-[#5f6d62]">
+                  Major Lens is a concept tool for students who want a more thoughtful way to narrow their options. It is not a replacement for academic advising, but a structured starting point for better questions and better comparisons.
+                </p>
               </section>
             </motion.section>
           )}
@@ -492,9 +516,9 @@ export default function App() {
             </motion.section>
           )}
 
-          {screen === 'results' && (
+          {screen === 'profile' && (
             <motion.section
-              key="results"
+              key="profile"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -502,7 +526,7 @@ export default function App() {
             >
               <EditorialCard className="p-8 lg:p-10">
                 <SectionIntro
-                  eyebrow="Results"
+                  eyebrow="Profile"
                   title="Your Major Lens profile"
                   text={`${summary.line1} ${summary.line2}`}
                 />
