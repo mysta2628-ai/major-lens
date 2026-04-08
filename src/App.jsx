@@ -131,11 +131,9 @@ function sentenceCase(scale) {
   return map[scale]
 }
 
-function SectionCard({ className = '', children }) {
+function EditorialCard({ children, className = '' }) {
   return (
-    <div
-      className={`rounded-[28px] border border-slate-200 bg-white shadow-[0_6px_24px_rgba(15,23,42,0.04)] ${className}`}
-    >
+    <div className={`rounded-[30px] border border-slate-200 bg-white ${className}`}>
       {children}
     </div>
   )
@@ -145,7 +143,7 @@ function PrimaryButton({ children, className = '', ...props }) {
   return (
     <button
       {...props}
-      className={`inline-flex items-center justify-center rounded-xl bg-slate-800 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
@@ -156,7 +154,7 @@ function SecondaryButton({ children, className = '', ...props }) {
   return (
     <button
       {...props}
-      className={`inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
@@ -165,11 +163,18 @@ function SecondaryButton({ children, className = '', ...props }) {
 
 function ProgressBar({ value }) {
   return (
-    <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
-      <div
-        className="h-full rounded-full bg-slate-700 transition-all"
-        style={{ width: `${value}%` }}
-      />
+    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="h-full rounded-full bg-slate-800 transition-all" style={{ width: `${value}%` }} />
+    </div>
+  )
+}
+
+function SectionIntro({ eyebrow, title, text }) {
+  return (
+    <div className="max-w-3xl">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{eyebrow}</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-slate-900 lg:text-4xl">{title}</h2>
+      <p className="mt-3 text-base leading-7 text-slate-500">{text}</p>
     </div>
   )
 }
@@ -244,11 +249,8 @@ export default function App() {
   }
 
   function nextQuestion() {
-    if (questionIndex < questions.length - 1) {
-      setQuestionIndex((prev) => prev + 1)
-    } else {
-      setScreen('results')
-    }
+    if (questionIndex < questions.length - 1) setQuestionIndex((prev) => prev + 1)
+    else setScreen('results')
   }
 
   function prevQuestion() {
@@ -271,33 +273,28 @@ export default function App() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] text-slate-800">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-[#f5f7fb]/90 backdrop-blur">
+    <div className="min-h-screen bg-[#f7f6f2] text-slate-900">
+      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-[#f7f6f2]/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <button
-            onClick={() => setScreen('home')}
-            className="flex items-center gap-3 text-left"
-          >
-            <div className="rounded-xl border border-slate-200 bg-white p-2.5">
+          <button onClick={() => setScreen('home')} className="flex items-center gap-3 text-left">
+            <div className="rounded-full border border-slate-300 bg-white p-3">
               <GraduationCap className="h-5 w-5 text-slate-700" />
             </div>
             <div>
-              <div className="text-[1.65rem] font-semibold tracking-[-0.03em] text-slate-800">
-                Major Lens
-              </div>
-              <p className="text-sm text-slate-500">An academic decision tool</p>
+              <div className="text-[2rem] font-semibold tracking-[-0.05em] text-slate-900">Major Lens</div>
+              <p className="text-sm text-slate-500">Editorial academic prototype</p>
             </div>
           </button>
 
-          <nav className="hidden items-center gap-2 lg:flex">
+          <nav className="hidden items-center gap-6 lg:flex">
             {navItems.map(([key, label]) => (
               <button
                 key={key}
                 onClick={() => setScreen(key)}
-                className={`rounded-full px-4 py-2 text-sm transition ${
+                className={`text-sm transition ${
                   screen === key
-                    ? 'bg-slate-800 text-white'
-                    : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                    ? 'font-semibold text-slate-900'
+                    : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 {label}
@@ -307,98 +304,137 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-6 py-10 lg:py-14">
         <AnimatePresence mode="wait">
           {screen === 'home' && (
             <motion.section
               key="home"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]"
+              exit={{ opacity: 0, y: -12 }}
+              className="space-y-10"
             >
-              <SectionCard className="p-8 lg:p-12">
-                <div className="mb-5 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
-                  Reflective decision-support prototype
+              <section className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
+                <div className="max-w-4xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    Reflective decision-support prototype
+                  </p>
+
+                  <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[0.96] tracking-[-0.06em] text-slate-900 lg:text-7xl">
+                    Choose a degree direction with more clarity, less inherited pressure.
+                  </h1>
+
+                  <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-600">
+                    Major Lens helps high school graduates and first-year university students explore possible study pathways through interests, values, analytical strengths, and real-world outcomes.
+                  </p>
+
+                  <div className="mt-8 flex flex-wrap gap-3">
+                    <PrimaryButton onClick={() => setScreen('assessment')}>
+                      Start the assessment <ArrowRight className="ml-2 h-4 w-4" />
+                    </PrimaryButton>
+                    <SecondaryButton onClick={() => setScreen('explore')}>
+                      Browse study directions
+                    </SecondaryButton>
+                  </div>
                 </div>
 
-                <h1 className="max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] text-slate-800 lg:text-6xl">
-                  Choose a degree direction based on interests, values, and real-world outcomes.
-                </h1>
+                <EditorialCard className="overflow-hidden">
+                  <div className="border-b border-slate-200 px-7 py-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">At a glance</p>
+                    <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-900">
+                      A more reflective way to narrow your options
+                    </h3>
+                  </div>
 
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-500">
-                  <span className="font-semibold text-slate-700">Major Lens</span> helps high school graduates and first-year university students explore degree pathways using structured self-assessment across interests, values, and employment expectations.
-                </p>
+                  <div className="space-y-6 px-7 py-7">
+                    {[
+                      {
+                        label: 'Interests',
+                        value: profile.curiosity,
+                      },
+                      {
+                        label: 'Analytical structure',
+                        value: profile.structure,
+                      },
+                      {
+                        label: 'Values alignment',
+                        value: profile.values,
+                      },
+                      {
+                        label: 'Employment pressure',
+                        value: profile.employment,
+                      },
+                    ].map((item) => (
+                      <div key={item.label}>
+                        <div className="mb-2 flex items-center justify-between">
+                          <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                          <span className="text-sm text-slate-400">{bandLabel(item.value)}</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                          <div className="h-full rounded-full bg-slate-800" style={{ width: `${item.value}%` }} />
+                        </div>
+                      </div>
+                    ))}
 
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <PrimaryButton onClick={() => setScreen('assessment')}>
-                    Start the assessment <ArrowRight className="ml-2 h-4 w-4" />
-                  </PrimaryButton>
-                  <SecondaryButton onClick={() => setScreen('explore')}>
-                    See the tool
-                  </SecondaryButton>
-                </div>
-              </SectionCard>
+                    <div className="rounded-[24px] bg-slate-50 p-5">
+                      <p className="text-sm font-medium text-slate-700">What this tool does</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        It does not tell you who you are. It helps you compare possible directions more carefully.
+                      </p>
+                    </div>
+                  </div>
+                </EditorialCard>
+              </section>
 
-              <div className="grid gap-4">
+              <section className="grid gap-6 lg:grid-cols-3">
                 {[
                   {
                     icon: Sparkles,
-                    title: 'Clarify what actually fits you',
-                    text: 'Move beyond assumptions and identify study directions that align with how you think, learn, and decide.',
+                    title: 'Interpret fit beyond prestige',
+                    text: 'Move away from inherited assumptions and toward evidence about how you think, learn, and decide.',
                   },
                   {
                     icon: BarChart3,
-                    title: 'Compare majors beyond salary',
-                    text: 'Weigh interest, structure, flexibility, social impact, and outcomes instead of relying on one metric.',
+                    title: 'Compare majors through multiple criteria',
+                    text: 'Interest, structure, flexibility, social impact, and outcomes can all matter at once.',
                   },
                   {
                     icon: CheckCircle2,
-                    title: 'Turn uncertainty into a clearer next step',
-                    text: 'Leave with a smaller, more defensible shortlist rather than a vague sense of direction.',
+                    title: 'Leave with a more defensible shortlist',
+                    text: 'The aim is not certainty, but a clearer basis for your next round of exploration.',
                   },
                 ].map((item) => {
                   const Icon = item.icon
                   return (
-                    <SectionCard key={item.title} className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                          <Icon className="h-5 w-5 text-slate-700" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-slate-800">{item.title}</h3>
-                          <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>
-                        </div>
+                    <EditorialCard key={item.title} className="p-7">
+                      <div className="rounded-full border border-slate-300 bg-slate-50 p-3 w-fit">
+                        <Icon className="h-5 w-5 text-slate-700" />
                       </div>
-                    </SectionCard>
+                      <h3 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-slate-900">{item.title}</h3>
+                      <p className="mt-3 text-base leading-7 text-slate-500">{item.text}</p>
+                    </EditorialCard>
                   )
                 })}
-              </div>
+              </section>
             </motion.section>
           )}
 
           {screen === 'assessment' && (
             <motion.section
               key="assessment"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
+              exit={{ opacity: 0, y: -12 }}
               className="mx-auto max-w-4xl"
             >
-              <SectionCard className="p-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-800">
-                      Build your academic profile
-                    </h2>
-                    <p className="mt-2 max-w-2xl text-base leading-7 text-slate-500">
-                      Answer 20 short statements to help identify how you learn, what motivates you, and how strongly employability pressures influence your decision-making.
-                    </p>
-                  </div>
-                  <div className="text-sm text-slate-500">Estimated time: 5–7 minutes</div>
-                </div>
+              <EditorialCard className="p-8 lg:p-10">
+                <SectionIntro
+                  eyebrow="Assessment"
+                  title="Build your academic profile"
+                  text="Answer 20 short statements to clarify how you learn, what motivates you, and how strongly employability pressure is shaping your decision."
+                />
 
-                <div className="mt-6 space-y-2">
+                <div className="mt-8 space-y-2">
                   <div className="flex items-center justify-between text-sm text-slate-500">
                     <span>
                       Question {questionIndex + 1} of {questions.length}
@@ -408,27 +444,27 @@ export default function App() {
                   <ProgressBar value={((questionIndex + 1) / questions.length) * 100} />
                 </div>
 
-                <div className="mt-8 rounded-[24px] border border-slate-200 bg-slate-50 p-6">
-                  <p className="text-xl font-medium leading-8 text-slate-800">
+                <div className="mt-10 rounded-[28px] bg-[#fbfaf7] p-6 ring-1 ring-slate-200">
+                  <p className="text-2xl font-medium leading-9 tracking-[-0.02em] text-slate-900">
                     {currentQuestion.text}
                   </p>
 
-                  <div className="mt-6 grid gap-3">
+                  <div className="mt-7 grid gap-3">
                     {likert.map((option) => {
                       const selected = answers[currentQuestion.id] === option.value
                       return (
                         <button
                           key={option.value}
                           onClick={() => setAnswer(option.value)}
-                          className={`rounded-2xl border px-4 py-4 text-left transition ${
+                          className={`rounded-[20px] border px-4 py-4 text-left transition ${
                             selected
-                              ? 'border-slate-800 bg-slate-800 text-white'
+                              ? 'border-slate-900 bg-slate-900 text-white'
                               : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           <div className="flex items-center justify-between">
                             <span className="font-medium">{option.label}</span>
-                            <span className={`text-sm ${selected ? 'text-slate-200' : 'text-slate-400'}`}>
+                            <span className={`text-sm ${selected ? 'text-slate-300' : 'text-slate-400'}`}>
                               {option.value}
                             </span>
                           </div>
@@ -438,13 +474,13 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
                   <SecondaryButton onClick={prevQuestion} disabled={questionIndex === 0}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Previous
                   </SecondaryButton>
 
                   <div className="text-sm text-slate-500">
-                    Four dimensions: Intellectual Interests · Academic Strengths · Personal Values · Decision Pressures
+                    Interests · Strengths · Values · Pressures
                   </div>
 
                   <PrimaryButton onClick={nextQuestion} disabled={!answers[currentQuestion.id]}>
@@ -452,73 +488,63 @@ export default function App() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </PrimaryButton>
                 </div>
-              </SectionCard>
+              </EditorialCard>
             </motion.section>
           )}
 
           {screen === 'results' && (
             <motion.section
               key="results"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"
+              exit={{ opacity: 0, y: -12 }}
+              className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]"
             >
-              <SectionCard className="p-8">
-                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-800">
-                  Your Major Lens profile
-                </h2>
-                <p className="mt-3 max-w-2xl text-base leading-7 text-slate-500">
-                  {summary.line1} {summary.line2}
-                </p>
+              <EditorialCard className="p-8 lg:p-10">
+                <SectionIntro
+                  eyebrow="Results"
+                  title="Your Major Lens profile"
+                  text={`${summary.line1} ${summary.line2}`}
+                />
 
-                <div className="mt-8 space-y-6">
+                <div className="mt-10 space-y-7">
                   {Object.entries(profile).map(([key, value]) => (
                     <div key={key}>
                       <div className="mb-2 flex items-center justify-between">
-                        <span className="font-medium text-slate-700">{sentenceCase(key)}</span>
-                        <span className="text-sm text-slate-500">{bandLabel(value)}</span>
+                        <span className="text-sm font-medium text-slate-700">{sentenceCase(key)}</span>
+                        <span className="text-sm text-slate-400">{bandLabel(value)}</span>
                       </div>
-                      <div className="h-3.5 overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-full rounded-full bg-slate-700"
-                          style={{ width: `${value}%` }}
-                        />
+                      <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-full rounded-full bg-slate-900" style={{ width: `${value}%` }} />
                       </div>
                     </div>
                   ))}
                 </div>
-              </SectionCard>
+              </EditorialCard>
 
               <div className="grid gap-6">
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">What stands out</h3>
-                  <p className="mt-3 leading-7 text-slate-500">{summary.standout}</p>
-                </SectionCard>
+                <EditorialCard className="p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Interpretation</p>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">What stands out</h3>
+                  <p className="mt-4 text-base leading-7 text-slate-500">{summary.standout}</p>
+                </EditorialCard>
 
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">Current strongest match</h3>
-                  <p className="mt-3 text-lg font-semibold text-slate-700">{topMatch?.title}</p>
-                  <p className="mt-2 leading-7 text-slate-500">
-                    This recommendation is currently strongest because your profile shows a close alignment with its expected learning style, values fit, and decision pattern.
+                <EditorialCard className="p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Leading direction</p>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">{topMatch?.title}</h3>
+                  <p className="mt-4 text-base leading-7 text-slate-500">
+                    This pathway currently ranks highest because your profile aligns with its mix of learning style, values fit, and outcome pattern.
                   </p>
-                </SectionCard>
+                </EditorialCard>
 
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">Next move</h3>
-                  <p className="mt-3 leading-7 text-slate-500">
-                    Treat this result as a structured starting point, not a final verdict.
-                  </p>
-
+                <EditorialCard className="p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Next move</p>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">Use this as a starting point</h3>
                   <div className="mt-5 flex flex-wrap gap-3">
-                    <PrimaryButton onClick={() => setScreen('explore')}>
-                      Explore matching directions
-                    </PrimaryButton>
-                    <SecondaryButton onClick={resetAssessment}>
-                      Retake assessment
-                    </SecondaryButton>
+                    <PrimaryButton onClick={() => setScreen('explore')}>Explore matching directions</PrimaryButton>
+                    <SecondaryButton onClick={resetAssessment}>Retake assessment</SecondaryButton>
                   </div>
-                </SectionCard>
+                </EditorialCard>
               </div>
             </motion.section>
           )}
@@ -526,38 +552,33 @@ export default function App() {
           {screen === 'explore' && (
             <motion.section
               key="explore"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              className="space-y-6"
+              exit={{ opacity: 0, y: -12 }}
+              className="space-y-8"
             >
-              <div>
-                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-800">
-                  Study directions that may fit you
-                </h2>
-                <p className="mt-2 max-w-3xl text-slate-500">
-                  Rather than offering one “correct” answer, the tool highlights several plausible study directions for deeper exploration.
-                </p>
-              </div>
+              <SectionIntro
+                eyebrow="Explore"
+                title="Study directions that may fit you"
+                text="Rather than pointing to one correct answer, the tool highlights several plausible directions for deeper investigation."
+              />
 
               <div className="grid gap-6 lg:grid-cols-3">
                 {rankedMajors.map((major, index) => {
                   const Icon = major.icon
                   return (
-                    <SectionCard key={major.id} className="p-7">
+                    <EditorialCard key={major.id} className="p-7">
                       <div className="flex items-center justify-between">
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <div className="rounded-full border border-slate-300 bg-slate-50 p-3">
                           <Icon className="h-5 w-5 text-slate-700" />
                         </div>
-                        <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
-                          Match #{index + 1}
+                        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                          Match {index + 1}
                         </div>
                       </div>
 
-                      <h3 className="mt-5 text-2xl font-semibold tracking-[-0.02em] text-slate-800">
-                        {major.title}
-                      </h3>
-                      <p className="mt-2 text-sm text-slate-500">Overall fit score: {major.fit}/100</p>
+                      <h3 className="mt-6 text-2xl font-semibold tracking-[-0.03em] text-slate-900">{major.title}</h3>
+                      <p className="mt-2 text-sm text-slate-400">Overall fit score: {major.fit}/100</p>
 
                       <div className="mt-6 space-y-5 text-sm leading-7 text-slate-500">
                         <div>
@@ -573,7 +594,7 @@ export default function App() {
                           <p>{major.careers}</p>
                         </div>
                       </div>
-                    </SectionCard>
+                    </EditorialCard>
                   )
                 })}
               </div>
@@ -589,28 +610,25 @@ export default function App() {
           {screen === 'compare' && (
             <motion.section
               key="compare"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
+              exit={{ opacity: 0, y: -12 }}
               className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"
             >
-              <SectionCard className="p-8">
-                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-800">
-                  Compare your options
-                </h2>
-                <p className="mt-3 text-slate-500">
-                  Students often are not completely unsure. More often, they are deciding between several plausible directions.
-                </p>
+              <EditorialCard className="p-8 lg:p-10">
+                <SectionIntro
+                  eyebrow="Compare"
+                  title="Compare your options"
+                  text="Most students are not choosing between certainty and uncertainty. They are choosing between several plausible futures."
+                />
 
-                <div className="mt-6 overflow-x-auto">
+                <div className="mt-8 overflow-x-auto">
                   <table className="w-full min-w-[760px] border-separate border-spacing-y-3 text-left">
                     <thead>
-                      <tr className="text-sm text-slate-500">
+                      <tr className="text-sm text-slate-400">
                         <th className="px-4 py-2">Criteria</th>
                         {majorData.map((major) => (
-                          <th key={major.id} className="px-4 py-2">
-                            {major.title}
-                          </th>
+                          <th key={major.id} className="px-4 py-2">{major.title}</th>
                         ))}
                       </tr>
                     </thead>
@@ -621,17 +639,15 @@ export default function App() {
                         ['Values fit', 'values'],
                         ['Career flexibility', 'flexibility'],
                       ].map(([label, key]) => (
-                        <tr key={key} className="bg-slate-50">
-                          <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">
-                            {label}
-                          </td>
+                        <tr key={key} className="bg-[#fbfaf7]">
+                          <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">{label}</td>
                           {majorData.map((major) => {
                             const highlighted = priority === key
                             return (
                               <td
                                 key={major.id + key}
                                 className={`px-4 py-4 ${
-                                  highlighted ? 'font-semibold text-slate-800' : 'text-slate-500'
+                                  highlighted ? 'font-semibold text-slate-900' : 'text-slate-500'
                                 }`}
                               >
                                 {bandLabel(major.scores[key])}
@@ -641,10 +657,8 @@ export default function App() {
                         </tr>
                       ))}
 
-                      <tr className="bg-slate-50">
-                        <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">
-                          Assessment style
-                        </td>
+                      <tr className="bg-[#fbfaf7]">
+                        <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">Assessment style</td>
                         {majorData.map((major) => (
                           <td key={major.id + 'assessment'} className="px-4 py-4 text-slate-500">
                             {major.assessmentStyle}
@@ -652,10 +666,8 @@ export default function App() {
                         ))}
                       </tr>
 
-                      <tr className="bg-slate-50">
-                        <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">
-                          Work style after graduation
-                        </td>
+                      <tr className="bg-[#fbfaf7]">
+                        <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-800">Work style after graduation</td>
                         {majorData.map((major) => (
                           <td key={major.id + 'work'} className="px-4 py-4 text-slate-500">
                             {major.workStyle}
@@ -665,16 +677,14 @@ export default function App() {
                     </tbody>
                   </table>
                 </div>
-              </SectionCard>
+              </EditorialCard>
 
               <div className="grid gap-6">
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">
-                    What matters most to you right now?
+                <EditorialCard className="p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Priority lens</p>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">
+                    What matters most right now?
                   </h3>
-                  <p className="mt-2 text-slate-500">
-                    Shift the priority to examine the same options through a different decision lens.
-                  </p>
 
                   <div className="mt-5 flex flex-wrap gap-3">
                     {priorities.map((item) => (
@@ -683,25 +693,25 @@ export default function App() {
                         onClick={() => setPriority(item.key)}
                         className={`rounded-full px-4 py-2 text-sm transition ${
                           priority === item.key
-                            ? 'bg-slate-800 text-white'
-                            : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                            ? 'bg-slate-900 text-white'
+                            : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
                         }`}
                       >
                         {item.label}
                       </button>
                     ))}
                   </div>
-                </SectionCard>
+                </EditorialCard>
 
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">Current top match by priority</h3>
+                <EditorialCard className="p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Current leader</p>
                   {(() => {
                     const top = [...majorData].sort((a, b) => b.scores[priority] - a.scores[priority])[0]
                     return (
                       <>
-                        <p className="mt-3 text-lg font-semibold text-slate-700">{top.title}</p>
-                        <p className="mt-2 leading-7 text-slate-500">
-                          This option currently leads because it performs strongest on{' '}
+                        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-slate-900">{top.title}</h3>
+                        <p className="mt-4 text-base leading-7 text-slate-500">
+                          This option currently performs strongest on{' '}
                           <span className="font-medium text-slate-700">
                             {priorities.find((p) => p.key === priority)?.label.toLowerCase()}
                           </span>.
@@ -709,7 +719,7 @@ export default function App() {
                       </>
                     )
                   })()}
-                </SectionCard>
+                </EditorialCard>
 
                 <div className="flex justify-end">
                   <PrimaryButton onClick={() => setScreen('next')}>
@@ -723,80 +733,70 @@ export default function App() {
           {screen === 'next' && (
             <motion.section
               key="next"
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -14 }}
-              className="space-y-6"
+              exit={{ opacity: 0, y: -12 }}
+              className="space-y-8"
             >
-              <div>
-                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-800">
-                  Your next step, not your final answer
-                </h2>
-                <p className="mt-2 max-w-3xl text-slate-500">
-                  A useful decision tool should not force certainty too early. It should help you ask better questions and gather better evidence.
-                </p>
-              </div>
+              <SectionIntro
+                eyebrow="Next steps"
+                title="Your next step, not your final answer"
+                text="A useful decision tool should not force certainty too early. It should help you ask better questions and gather better evidence."
+              />
 
               <div className="grid gap-6 lg:grid-cols-2">
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">Reflection prompts</h3>
+                <EditorialCard className="p-7">
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">Reflection prompts</h3>
                   <div className="mt-5 space-y-4">
                     {[
                       'Which recommendation feels genuinely exciting, not merely safe?',
                       'Which option fits your values as well as your abilities?',
                       'What information do you still need before committing to a degree path?',
                     ].map((prompt) => (
-                      <div
-                        key={prompt}
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-600"
-                      >
+                      <div key={prompt} className="rounded-[22px] bg-[#fbfaf7] p-4 text-slate-600 ring-1 ring-slate-200">
                         {prompt}
                       </div>
                     ))}
                   </div>
-                </SectionCard>
+                </EditorialCard>
 
-                <SectionCard className="p-7">
-                  <h3 className="text-xl font-semibold text-slate-800">Suggested actions</h3>
+                <EditorialCard className="p-7">
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">Suggested actions</h3>
                   <div className="mt-5 space-y-4">
                     {[
                       'Explore degree structures for your top two study directions on university websites.',
                       'Talk to current students studying these majors or attend university information sessions.',
                       'Compare sample first-year courses across universities offering these study directions.',
                     ].map((action) => (
-                      <div
-                        key={action}
-                        className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-600"
-                      >
+                      <div key={action} className="rounded-[22px] bg-[#fbfaf7] p-4 text-slate-600 ring-1 ring-slate-200">
                         {action}
                       </div>
                     ))}
                   </div>
-                </SectionCard>
+                </EditorialCard>
               </div>
 
-              <SectionCard className="p-8">
-                <h3 className="text-xl font-semibold text-slate-800">Summary</h3>
-                <p className="mt-3 leading-7 text-slate-500">
-                  You are not lacking direction. You are balancing curiosity with caution. Your next best step is to explore two possible study directions before committing to a degree path.
+              <EditorialCard className="p-8 lg:p-10">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Summary</p>
+                <h3 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-slate-900">
+                  You are not lacking direction.
+                </h3>
+                <p className="mt-4 max-w-3xl text-base leading-7 text-slate-500">
+                  You are balancing curiosity with caution. Your next best step is to explore two possible study directions before committing to a degree path.
                 </p>
 
-                <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-5">
+                <div className="mt-7 rounded-[26px] bg-[#fbfaf7] p-6 ring-1 ring-slate-200">
                   <p className="font-medium text-slate-800">About Major Lens</p>
-                  <p className="mt-2 leading-7 text-slate-500">
+                  <p className="mt-2 text-base leading-7 text-slate-500">
                     Major Lens is a concept tool designed to support more reflective and informed degree choice. It does not replace university advising, but helps students make their decision process clearer and more structured.
                   </p>
                 </div>
 
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <PrimaryButton onClick={() => setScreen('home')}>
-                    Back to home
-                  </PrimaryButton>
-                  <SecondaryButton onClick={resetAssessment}>
-                    Start again
-                  </SecondaryButton>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <PrimaryButton onClick={() => setScreen('home')}>Back to home</PrimaryButton>
+                  <SecondaryButton onClick={resetAssessment}>Start again</SecondaryButton>
                 </div>
-              </SectionCard>
+              </EditorialCard>
             </motion.section>
           )}
         </AnimatePresence>
