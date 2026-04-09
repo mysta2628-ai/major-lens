@@ -9,9 +9,9 @@ import {
   Briefcase,
 } from "lucide-react";
 
-/* -----------------------------
+/* ---------------------------------
    DATA
------------------------------ */
+--------------------------------- */
 
 const QUESTIONS = [
   ["I enjoy exploring multiple subject areas before choosing one.", "interests"],
@@ -102,9 +102,9 @@ const MAJOR_CLUSTERS = [
   },
 ];
 
-/* -----------------------------
-   SMALL HELPERS
------------------------------ */
+/* ---------------------------------
+   HELPERS
+--------------------------------- */
 
 function dimensionLabel(key) {
   switch (key) {
@@ -153,6 +153,90 @@ function scoreWidth(score) {
   return `${(score / 5) * 100}%`;
 }
 
+function profileNarrative(profile) {
+  if (!profile) return "";
+
+  const { interests, structure, values, pressure } = profile;
+
+  if (values >= 4 && pressure >= 4) {
+    return "Your profile suggests a tension between meaningful fit and employment pressure. You appear to care strongly about purpose and alignment, but market and security concerns may also be shaping your decision more than you would like.";
+  }
+
+  if (structure >= 4 && pressure >= 4) {
+    return "Your profile suggests you prefer structured, outcome-oriented pathways. You may feel most comfortable with majors that offer clear analytical frameworks and visible employment pathways.";
+  }
+
+  if (interests >= 4 && values >= 4) {
+    return "Your profile suggests a reflective and exploratory decision style. You appear motivated by curiosity, meaning, and long-term fit rather than external pressure alone.";
+  }
+
+  return "Your profile suggests a balanced decision pattern. You appear to weigh interests, structure, values, and practical considerations together rather than relying on one factor alone.";
+}
+
+function dimensionInterpretation(key, score) {
+  if (key === "interests") {
+    if (score >= 4.2) {
+      return "You appear to have a clearly developed sense of academic curiosity, with stronger signals about what kinds of fields genuinely engage you.";
+    }
+    if (score >= 3.2) {
+      return "You seem open to several fields, but your academic interests may still be broad rather than sharply defined.";
+    }
+    return "Your academic interests may still be relatively diffuse, which suggests more exploration could be useful before narrowing too quickly.";
+  }
+
+  if (key === "structure") {
+    if (score >= 4.2) {
+      return "You show a strong preference for organised, logic-based learning and may do best in majors with clearer frameworks and expectations.";
+    }
+    if (score >= 3.2) {
+      return "You show a moderate preference for organised and logic-based learning, but may not want a highly rigid academic environment.";
+    }
+    return "You may be less drawn to highly formal or rigid structures, and could prefer learning environments with more interpretive flexibility.";
+  }
+
+  if (key === "values") {
+    if (score >= 4.2) {
+      return "Personal meaning appears to be a major force in your decision-making, which suggests fit and purpose matter deeply to you.";
+    }
+    if (score >= 3.2) {
+      return "Personal meaning appears important in your choices, though it is being weighed alongside practical concerns.";
+    }
+    return "Values are present in your decision-making, but may not yet be acting as the main filter through which you evaluate majors.";
+  }
+
+  if (key === "pressure") {
+    if (score >= 4.2) {
+      return "Employment pressure is playing a strong role in your decision, which may lead you to favour perceived security even when fit is less clear.";
+    }
+    if (score >= 3.2) {
+      return "Career outcomes are clearly part of your decision, but not the only force shaping it.";
+    }
+    return "Employment pressure seems present but not dominant, which may give you more room to prioritise longer-term fit.";
+  }
+
+  return "";
+}
+
+function profileKeyTension(profile) {
+  if (!profile) return "";
+
+  const { interests, values, pressure, structure } = profile;
+
+  if (pressure >= 3.8 && (interests >= 3.2 || values >= 3.2)) {
+    return "Employment pressure remains active even though interests and values are also clearly present. This may lead you to narrow options too early based on perceived career safety rather than deeper academic fit.";
+  }
+
+  if (interests >= 3.8 && values >= 3.8 && pressure < 3.2) {
+    return "Your profile suggests that fit and meaning are leading more than external pressure. The challenge may be less about permission and more about identifying which pathway deserves deeper commitment.";
+  }
+
+  if (structure >= 3.8 && pressure >= 3.5) {
+    return "Your profile suggests a pull toward majors that feel organised, legible, and professionally secure. The key question is whether that structure reflects genuine fit or simply reassurance.";
+  }
+
+  return "Your profile is relatively balanced, which means your challenge may not be a lack of options, but distinguishing what genuinely fits you from what merely feels familiar or safe.";
+}
+
 function recommendedMajors(profile) {
   if (!profile) return MAJOR_CLUSTERS;
 
@@ -191,29 +275,9 @@ function recommendedMajors(profile) {
   return scored.sort((a, b) => b.fit - a.fit);
 }
 
-function profileNarrative(profile) {
-  if (!profile) return "";
-
-  const { interests, structure, values, pressure } = profile;
-
-  if (values >= 4 && pressure >= 4) {
-    return "Your profile suggests a tension between meaningful fit and employment pressure. You appear to care strongly about purpose and alignment, but market and security concerns may also be shaping your decision more than you would like.";
-  }
-
-  if (structure >= 4 && pressure >= 4) {
-    return "Your profile suggests you prefer structured, outcome-oriented pathways. You may feel most comfortable with majors that offer clear analytical frameworks and visible employment pathways.";
-  }
-
-  if (interests >= 4 && values >= 4) {
-    return "Your profile suggests a reflective and exploratory decision style. You appear motivated by curiosity, meaning, and long-term fit rather than external pressure alone.";
-  }
-
-  return "Your profile suggests a balanced decision pattern. You appear to weigh interests, structure, values, and practical considerations together rather than relying on one factor alone.";
-}
-
-/* -----------------------------
+/* ---------------------------------
    UI COMPONENTS
------------------------------ */
+--------------------------------- */
 
 function Card({ children, className = "" }) {
   return (
@@ -275,7 +339,7 @@ function Header({ screen, setScreen }) {
         </div>
 
         <div>
-          <div className="text-lg font-semibold tracking-[-0.02em]">
+          <div className="text-lg font-semibold tracking-[-0.02em] text-[#21352d]">
             Major Lens
           </div>
           <div className="text-xs text-[#7a867c]">
@@ -299,9 +363,9 @@ function Header({ screen, setScreen }) {
   );
 }
 
-/* -----------------------------
+/* ---------------------------------
    SCREENS
------------------------------ */
+--------------------------------- */
 
 function HomeScreen({ setScreen, previewProfile }) {
   return (
@@ -463,6 +527,7 @@ function AssessmentScreen({
 }) {
   const total = QUESTIONS.length;
   const answeredCount = answers.filter((a) => a !== null).length;
+  const [questionText] = QUESTIONS[currentQuestion];
 
   function setAnswer(value) {
     const updated = [...answers];
@@ -483,8 +548,6 @@ function AssessmentScreen({
       setCurrentQuestion(currentQuestion - 1);
     }
   }
-
-  const [questionText] = QUESTIONS[currentQuestion];
 
   return (
     <section className="max-w-4xl">
@@ -557,13 +620,18 @@ function ProfileScreen({ profile, setScreen }) {
   if (!profile) {
     return (
       <section className="max-w-3xl">
-        <h2 className="text-3xl font-semibold text-[#21352d]">Profile</h2>
-        <p className="mt-4 text-[#5f6d62]">
+        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-[#21352d]">
+          Your decision profile
+        </h2>
+        <p className="mt-4 leading-7 text-[#5f6d62]">
           Please complete the assessment first.
         </p>
       </section>
     );
   }
+
+  const majors = recommendedMajors(profile);
+  const topThree = majors.slice(0, 3);
 
   return (
     <section>
@@ -571,18 +639,47 @@ function ProfileScreen({ profile, setScreen }) {
         Your decision profile
       </h2>
 
-      <p className="mt-4 max-w-3xl leading-8 text-[#5f6d62]">
-        {profileNarrative(profile)}
-      </p>
+      <Card className="mt-8 p-8">
+        <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">
+          You are balancing interest with caution.
+        </h3>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <p className="mt-4 max-w-4xl leading-8 text-[#5f6d62]">
+          Your profile suggests a relatively even weighting of interests,
+          structure, values, and practical concerns. This means your decision is
+          not being driven by a single factor, but you may still need help
+          separating what genuinely fits you from what simply feels safer.
+        </p>
+
+        <div className="mt-6 rounded-[22px] bg-[#f1f2ec] p-5">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#486156]">
+            Key tension
+          </p>
+          <p className="mt-2 leading-7 text-[#5f6d62]">
+            {profileKeyTension(profile)}
+          </p>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#486156]">
+            What this means
+          </p>
+          <p className="mt-2 leading-7 text-[#5f6d62]">
+            Based on this profile, the next useful step is to explore study
+            directions that combine meaning, structure, and flexibility rather
+            than choosing only by income outlook or external expectation.
+          </p>
+        </div>
+      </Card>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
         {Object.entries(profile).map(([key, value]) => (
           <Card key={key} className="p-7">
-            <h3 className="text-lg font-semibold text-[#21352d]">
+            <h3 className="text-xl font-semibold text-[#21352d]">
               {dimensionLabel(key)}
             </h3>
 
-            <p className="mt-2 text-sm text-[#7a867c]">
+            <p className="mt-2 text-sm font-medium text-[#486156]">
               {scoreDescriptor(key, value)}
             </p>
 
@@ -596,18 +693,58 @@ function ProfileScreen({ profile, setScreen }) {
             <p className="mt-4 text-2xl font-semibold text-[#21352d]">
               {value.toFixed(1)} / 5
             </p>
+
+            <p className="mt-4 leading-7 text-[#5f6d62]">
+              {dimensionInterpretation(key, value)}
+            </p>
           </Card>
         ))}
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-4">
-        <PrimaryButton onClick={() => setScreen("explore")}>
-          Explore study directions
-        </PrimaryButton>
+      <Card className="mt-10 p-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#486156]">
+          Suggested directions
+        </p>
 
-        <SecondaryButton onClick={() => setScreen("compare")}>
-          Compare majors
-        </SecondaryButton>
+        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#21352d]">
+          Based on this profile, you may benefit from comparing these study directions
+        </h3>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {topThree.map((major) => (
+            <div
+              key={major.key}
+              className="rounded-[22px] border border-[#dfe3db] bg-[#fbfbf8] p-5"
+            >
+              <p className="font-semibold text-[#21352d]">{major.title}</p>
+              <p className="mt-2 text-sm leading-6 text-[#5f6d62]">
+                {major.description}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-6 leading-7 text-[#5f6d62]">
+          Students with similar profiles often benefit from comparing majors
+          that combine analytical structure with social relevance, rather than
+          choosing only by income outlook.
+        </p>
+      </Card>
+
+      <div className="mt-10">
+        <p className="mb-4 leading-7 text-[#5f6d62]">
+          The next useful step is to move from interpretation into comparison.
+        </p>
+
+        <div className="flex flex-wrap gap-4">
+          <PrimaryButton onClick={() => setScreen("explore")}>
+            See recommended study directions
+          </PrimaryButton>
+
+          <SecondaryButton onClick={() => setScreen("compare")}>
+            Compare matched majors
+          </SecondaryButton>
+        </div>
       </div>
     </section>
   );
@@ -769,9 +906,9 @@ function NextStepsScreen({ profile }) {
   );
 }
 
-/* -----------------------------
+/* ---------------------------------
    APP
------------------------------ */
+--------------------------------- */
 
 export default function App() {
   const [screen, setScreen] = useState("home");
@@ -800,7 +937,9 @@ export default function App() {
       }
     });
 
-    const hasAnyAnswers = counts.interests + counts.structure + counts.values + counts.pressure > 0;
+    const hasAnyAnswers =
+      counts.interests + counts.structure + counts.values + counts.pressure > 0;
+
     if (!hasAnyAnswers) return null;
 
     return {
@@ -855,7 +994,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#f7f7f4] text-[#21352d]">
       <Header screen={screen} setScreen={setScreen} />
-
       <main className="mx-auto max-w-7xl px-6 pb-24">{renderScreen()}</main>
     </div>
   );
